@@ -449,7 +449,9 @@ func (c *Config) OpenOCDConfiguration() (args []string, err error) {
 	if !regexp.MustCompile(`^[\p{L}0-9_-]+$`).MatchString(c.Target.OpenOCDTarget) {
 		return nil, fmt.Errorf("OpenOCD target has an invalid name: %#v", c.Target.OpenOCDTarget)
 	}
-	if c.Target.OpenOCDTransport != "" && c.Target.OpenOCDTransport != "swd" {
+	switch c.Target.OpenOCDTransport {
+	case "", "swd", "hla_swd", "dapdirect_swd":
+	default:
 		return nil, fmt.Errorf("unknown OpenOCD transport: %#v", c.Target.OpenOCDTransport)
 	}
 	args = []string{"-f", "interface/" + openocdInterface + ".cfg"}
